@@ -14,6 +14,18 @@ components:
           schema:
             $ref: "#/components/schemas/Problem"
       description: A generic problem
+    InputValidationProblemResponse:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/InputValidationProblem"
+      description: A problem caused by invalid input
+    InputValidationProblemsResponse:
+      content:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/InputValidationProblems"
+      description: A problem caused by invalid inputs
   schemas:
     Problem:
       description: A Problem object
@@ -56,3 +68,29 @@ components:
           type: string
           description: A human-readable explanation specific to this occurrence of the problem.
           example: The server is currently not avaliable.
+    InputValidationProblem:
+      type: object
+      allOf:
+        - $ref: "#/components/schemas/Problem"
+      properties:
+        in:
+          type: string
+          enum:
+            - body
+            - header
+            - path
+            - query
+        name:
+          type: string
+          description: The name of the field, header, query or path
+        value:
+          description: 'Can be anything: string, number, array, object, etc., including null'
+    InputValidationProblems:
+      type: object
+      allOf:
+      - $ref: "#/components/schemas/Problem"
+      properties:
+        issues:
+          type: array
+          items:
+            $ref: "#/components/schemas/InputValidationProblem"
